@@ -4,7 +4,7 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "start": "sirv public"
+    "start": "sirv public -single"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^16.0.0",
@@ -22,6 +22,12 @@
     "tailwindcss": "^2.0.2"
   },
   "dependencies": {
-    "sirv-cli": "^1.0.0"
+    "@rollup/plugin-json": "^4.1.0",
+    "@truffle/contract": "^4.3.10",
+    "@truffle/hdwallet-provider": "^1.2.3",
+    "rollup-plugin-node-polyfills": "^0.2.1",
+    "sirv-cli": "^1.0.0",
+    "svelte-routing": "^1.5.0",
+    "web3": "^1.2.2"
   }
 }
