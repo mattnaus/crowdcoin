@@ -1,1 +1,1 @@
-<h1>Welcome to About us Page</h1>
+<h1>Welcome to the About us Page</h1>
