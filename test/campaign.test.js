@@ -86,4 +86,40 @@ contract("Campaign", async (accounts) => {
     //console.log(balanceNew, balanceOld);
     assert(balanceNew > balanceOld + 4);
   });
+
+  it("Returns a campaign summary", async () => {
+    await CampaignInstance.contribute({
+      from: accounts[0],
+      value: 250,
+    });
+
+    await CampaignInstance.createRequest("As", 300, accounts[1], {
+      from: accounts[0],
+      gas: "1000000",
+    });
+
+    let summary = await CampaignInstance.getSummary();
+
+    assert.equal(100, summary[0]);
+    assert.equal(250, summary[1]);
+    assert.equal(1, summary[2]);
+    assert.equal(1, summary[3]);
+    assert.equal(accounts[0], summary[4]);
+  });
+
+  it("Returns the number of requests", async () => {
+    await CampaignInstance.createRequest("As", 300, accounts[1], {
+      from: accounts[0],
+      gas: "1000000",
+    });
+
+    await CampaignInstance.createRequest("As", 300, accounts[1], {
+      from: accounts[0],
+      gas: "1000000",
+    });
+
+    let nrOfRequests = await CampaignInstance.getRequestsCount();
+
+    assert.equal(2, nrOfRequests);
+  });
 });
