@@ -11,7 +11,6 @@
 
   onMount(async () => {
     campaigns = await factory.methods.getDeployedCampaigns().call();
-    console.log(campaigns);
   });
 
 </script>

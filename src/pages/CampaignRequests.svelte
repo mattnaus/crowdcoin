@@ -6,6 +6,7 @@
   import Notification from '../components/Notification.svelte';
   import Campaign from '../utils/campaign';
   import web3 from '../utils/web3';
+  import Request from '../components/Request.svelte';
 
   let formButton,
     notification,
@@ -30,13 +31,7 @@
 
     requests = await getRequests();
 
-    console.log(requests);
-
   });
-
-  const voteOnRequest = async () => {
-    console.log('click :)');
-  }
 
   const getRequests = async () => {
 
@@ -63,6 +58,7 @@
     if ( requestDescription === '' || requestAmount === 0 || requestRecipient === '' ) {
       notification.message = "Please provide a description, an amount and a recipient address for this request.";
       notification.show = 'warning';
+      return false;
     }
 
     formButton.loading = true;
@@ -75,14 +71,14 @@
 
       let r = await campaign.methods.getAllRequests().call();
 
-      console.log(r);
-
       notification.message = "Your request has been stored.";
       notification.show = "confirmation";
 
+      requests = await getRequests();
+
     } catch (err) {
       notification.message = err.message;
-      notification.show = true;
+      notification.show = "warning";
     }
 
     formButton.loading = false;
@@ -129,69 +125,7 @@
 <div class="flex">
   <div class="w-2/3">
     {#each requests as request, i}
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-10">
-      <div class="px-4 py-5 sm:px-6">
-        <h3 class="text-lg leading-6 font-medium text-gray-900">
-          Request #{i}
-        </h3>
-      </div>
-      <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
-        <dl class="sm:divide-y sm:divide-gray-200">
-          <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">
-              Description
-            </dt>
-            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-              {request.description}
-            </dd>
-          </div>
-          <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">
-              Amount
-            </dt>
-            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-              {request.value} ETH
-            </dd>
-          </div>
-          <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">
-              Recipient
-            </dt>
-            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-              {request.recipient}
-            </dd>
-          </div>
-          <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">
-              Complete
-            </dt>
-            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-              {#if request.complete}
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  Completed
-              </span>
-              {:else}
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
-                Not completed
-              </span>
-              {/if}
-            </dd>
-          </div>
-          <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">
-              Number of "yes" votes
-            </dt>
-            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-              {request.approvalCount}
-            </dd>
-          </div>
-          <div class="px-4 py-5 sm:px-6">
-            <Button label="Vote on request" on:click={voteOnRequest} />
-            <Button label="Complete request" on:click={voteOnRequest} style="secondary" />
-          </div>
-        </dl>
-      </div>
-    </div>
+    <Request id={i} {...request} campaign={campaign} accounts={accounts} />
     {/each}
   </div>
   <div class="w-1/3 pl-10">
@@ -235,7 +169,7 @@
                 <input type="text" name="email" id="email" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="Ethereum address" bind:value={requestRecipient}>
               </div>
             </div>
-            <Notification bind:this={notification} show={false} />
+            <Notification bind:this={notification} />
           </div>
           <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
             <Button bind:this={formButton} type="button" label="Create request" loading={false} on:click="{createRequest}" />

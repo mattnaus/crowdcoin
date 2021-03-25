@@ -59,7 +59,7 @@
                 </div>
               </div>
             </div>
-            <Notification bind:this={notification} show={false} />
+            <Notification bind:this={notification} />
             {#if message}
               <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4 w-full">
                 <div class="flex">
