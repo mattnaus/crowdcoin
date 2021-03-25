@@ -1,4 +1,5 @@
 pragma solidity >=0.4.25 <0.7.0;
+pragma experimental ABIEncoderV2;
 
 contract CampaignFactory {
 	Campaign[] public deployedCampaigns;
@@ -91,6 +92,28 @@ contract Campaign {
 
 	function getRequestsCount() public view returns (uint) {
 		return requests.length;
+	}
+
+	function getAllRequests() public view returns (string[] memory, uint[] memory, address[] memory, bool[] memory, uint[] memory) {
+
+	    string[] memory description = new string[](requests.length);
+			uint[] memory value = new uint[](requests.length);
+			address[] memory recipient = new address[](requests.length);
+			bool[] memory complete = new bool[](requests.length);
+			uint[] memory aCount = new uint[](requests.length);
+
+	    for(uint i = 0; i < requests.length; i++) {
+
+	        description[i] = requests[i].description;
+					value[i] = requests[i].value;
+					recipient[i] = requests[i].recipient;
+					complete[i] = requests[i].complete;
+					aCount[i] = requests[i].approvalCount;
+
+	    }
+
+	    return (description, value, recipient, complete, aCount);
+
 	}
 
 }

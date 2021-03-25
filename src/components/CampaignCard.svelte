@@ -12,7 +12,7 @@
     </svg>
   </div>
   <div class="flex-1 min-w-0">
-    <Link to="{address}" class="focus:outline-none">
+    <Link to="/campaigns/{address}" class="focus:outline-none">
       <span class="absolute inset-0" aria-hidden="true"></span>
       <p class="text-sm font-medium text-gray-900">
         {address}

@@ -122,4 +122,25 @@ contract("Campaign", async (accounts) => {
 
     assert.equal(2, nrOfRequests);
   });
+
+  it("Returns arrays containing all request data", async () => {
+    await CampaignInstance.createRequest("As", 300, accounts[1], {
+      from: accounts[0],
+      gas: "1000000",
+    });
+
+    await CampaignInstance.createRequest("As", 300, accounts[1], {
+      from: accounts[0],
+      gas: "1000000",
+    });
+
+    let requestData = await CampaignInstance.getAllRequests();
+
+    assert(Object.keys(requestData).length === 5);
+    assert(Array.isArray(requestData[0]));
+    assert(Array.isArray(requestData[1]));
+    assert(Array.isArray(requestData[2]));
+    assert(Array.isArray(requestData[3]));
+    assert(Array.isArray(requestData[4]));
+  });
 });

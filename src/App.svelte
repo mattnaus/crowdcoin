@@ -4,7 +4,6 @@
   import Campaigns from "./pages/Campaigns.svelte";
   import New from "./pages/New.svelte";
 	import About from "./pages/About.svelte";
-	import Campaign from "./pages/Campaign.svelte";
 
 	function getProps({ location, href, isPartiallyCurrent, isCurrent }) {
     const isActive = href === "/" ? isCurrent : isPartiallyCurrent || isCurrent;

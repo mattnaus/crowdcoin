@@ -21,5 +21,5 @@ module.exports = {
       backgroundColor: ["active", "focus"],
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/forms")],
 };
