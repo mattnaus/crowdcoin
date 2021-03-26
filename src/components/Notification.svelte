@@ -1,11 +1,24 @@
 <svelte:options accessors/>
 <script>
-  export let message = "This is a notification",
-    show = false;
+  import { beforeUpdate, afterUpdate } from 'svelte';
+  import { fade } from 'svelte/transition';
+
+  export let message = "This is a notification";
+  export let show = false;
+  export let selfdestruct = true;
+  export let lifetime = 6000;
+
+  afterUpdate( () => {
+    if (selfdestruct) {
+      setTimeout(() => {
+        show = false;
+      }, lifetime);
+    }
+  });
 </script>
 
 {#if show === 'warning'}
-<div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4 w-full">
+<div transition:fade class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4 w-full">
   <div class="flex">
     <div class="flex-shrink-0">
       <!-- Heroicon name: solid/exclamation -->
@@ -21,7 +34,7 @@
   </div>
 </div>
 {:else if show === 'confirmation'}
-<div class="bg-green-50 border-l-4 border-green-400 p-4 mb-4 w-full">
+<div transition:fade class="bg-green-50 border-l-4 border-green-400 p-4 mb-4 w-full">
   <div class="flex">
     <div class="flex-shrink-0">
       <!-- Heroicon name: solid/exclamation -->

@@ -21,6 +21,7 @@
   export let target = false;
   export let style = "primary";
   export let classes = '';
+  export let disabled = false;
 </script>
 
 {#if type === 'ilink'}
@@ -38,7 +39,7 @@
   {label}
 </a>
 {:else}
-<button class="{styles[style]} {classes}" on:click|preventDefault>
+<button class="{styles[style]} {classes}" on:click|preventDefault disabled={disabled}>
   {#if icon !== 'none'}
     {@html icons[icon]}
   {/if}

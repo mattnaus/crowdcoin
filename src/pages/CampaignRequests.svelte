@@ -29,13 +29,13 @@
 
     if ( accounts[0] === campaignSummary[4] ) isManager = true;
 
-    requests = await getRequests();
+    getRequests();
 
   });
 
   const getRequests = async () => {
 
-    let r = await campaign.methods.getAllRequests().call(), requests = [];
+    let r = await campaign.methods.getAllRequests().call(), requestsTemp = [];
 
     for (let i = 0; i < r[0].length; i++) {
       let request = {
@@ -45,10 +45,10 @@
         "complete": r[3][i],
         "approvalCount": r[4][i]
       }
-      requests.push(request);
+      requestsTemp.push(request);
     }
 
-    return requests;
+    requests = requestsTemp;
   }
 
   const createRequest = async () => {
@@ -74,7 +74,7 @@
       notification.message = "Your request has been stored.";
       notification.show = "confirmation";
 
-      requests = await getRequests();
+      getRequests();
 
     } catch (err) {
       notification.message = err.message;
@@ -125,7 +125,7 @@
 <div class="flex">
   <div class="w-2/3">
     {#each requests as request, i}
-    <Request id={i} {...request} campaign={campaign} accounts={accounts} />
+    <Request id={i} {...request} campaign={campaign} accounts={accounts} on:requestUpdated={getRequests} />
     {/each}
   </div>
   <div class="w-1/3 pl-10">
@@ -169,7 +169,7 @@
                 <input type="text" name="email" id="email" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="Ethereum address" bind:value={requestRecipient}>
               </div>
             </div>
-            <Notification bind:this={notification} />
+            <Notification bind:this={notification} selfdestruct={true} lifetime={10000} />
           </div>
           <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
             <Button bind:this={formButton} type="button" label="Create request" loading={false} on:click="{createRequest}" />

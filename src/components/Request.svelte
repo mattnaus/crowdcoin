@@ -3,23 +3,29 @@
   import { onMount } from "svelte";
   import Notification from './Notification.svelte';
   import web3 from '../utils/web3';
+  import { createEventDispatcher } from 'svelte';
 
   let notification,
-    voteButton;
+    voteButton,
+    completeButton;
+
+  const dispatch = createEventDispatcher();
 
   onMount(async () => {
-    console.log(accounts);
+
   });
 
   const voteOnRequest = async (id) => {
     voteButton.loading = true;
-
-    console.log(id);
+    notification.show = false;
 
     try {
       await campaign.methods.approveRequest(Number(id)).send({
         from: accounts[0]
       });
+      dispatch('requestUpdated');
+      notification.message = "Your vote has been recorded.";
+      notification.show = "confirmation";
     } catch (err) {
       notification.message = err.message;
       notification.show = "warning";
@@ -29,7 +35,22 @@
   }
 
   const completeRequest = async (id) => {
-    console.log('complete request');
+    completeButton.loading = true;
+    notification.show = false
+
+    try {
+      await campaign.methods.finalizeRequest(id).send({
+        from: accounts[0]
+      });
+      dispatch('requestUpdated');
+      notification.message = "The request has been completed.";
+      notification.show = "confirmation";
+    } catch (err) {
+      notification.message = err.message;
+      notification.show = "warning";
+    }
+
+    completeButton.loading = false;
   }
 
   export let id = 0;
@@ -43,7 +64,11 @@
 </script>
 <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-10">
   <div class="px-4 py-5 sm:px-6">
-    <Notification bind:this={notification} />
+    {#if !complete}
+    <Notification bind:this={notification} selfdestruct={false} />
+    {:else}
+    <Notification selfdestruct={false} message={"This request has been completed and can no longer be voted on or interacted with."} show={"warning"} />
+    {/if}
     <h3 class="text-lg leading-6 font-medium text-gray-900">
       Request #{id}
     </h3>
@@ -98,10 +123,12 @@
           {approvalCount}
         </dd>
       </div>
+      {#if !complete}
       <div class="px-4 py-5 sm:px-6">
         <Button bind:this={voteButton} label="Vote on request" on:click={voteOnRequest(id)} classes="mr-4" />
-        <Button label="Complete request" on:click={completeRequest(id)} style="secondary" />
+        <Button bind:this={completeButton} label="Complete request" on:click={completeRequest(id)} style="secondary" />
       </div>
+      {/if}
     </dl>
   </div>
 </div>
